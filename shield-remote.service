@@ -1,0 +1,17 @@
+[Unit]
+Description=Shield Remote (browser remote for the Shield / Fire TV, port 8780)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/jeff/Coding/nvidia-shield/shield-remote
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=/home/jeff/Coding/nvidia-shield/shield-remote/remote.env
+ExecStart=/home/jeff/Coding/nvidia-shield/shield-remote/.venv/bin/python server.py
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=default.target
