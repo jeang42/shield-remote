@@ -1,15 +1,19 @@
+# User unit. Assumes the repo is cloned to ~/shield-remote and `uv sync` has been run;
+# change the paths if it lives elsewhere. Install:
+#   cp shield-remote.service ~/.config/systemd/user/
+#   systemctl --user daemon-reload && systemctl --user enable --now shield-remote
 [Unit]
-Description=Shield Remote (browser remote for the Shield / Fire TV, port 8780)
+Description=Shield Remote (browser remote for Android TV / Fire TV, port 8780)
 After=network-online.target
 Wants=network-online.target
 
 [Service]
 Type=simple
-WorkingDirectory=/home/jeff/Coding/nvidia-shield/shield-remote
+WorkingDirectory=%h/shield-remote
 Environment=PYTHONDONTWRITEBYTECODE=1
 Environment=PYTHONUNBUFFERED=1
-EnvironmentFile=/home/jeff/Coding/nvidia-shield/shield-remote/remote.env
-ExecStart=/home/jeff/Coding/nvidia-shield/shield-remote/.venv/bin/python server.py
+EnvironmentFile=-%h/shield-remote/remote.env
+ExecStart=%h/shield-remote/.venv/bin/python server.py
 Restart=on-failure
 RestartSec=3
 

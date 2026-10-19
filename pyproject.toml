@@ -1,6 +1,9 @@
 [project]
 name = "shield-remote"
 version = "0.1.0"
+description = "Browser remote for Android TV / Google TV (NVIDIA Shield) and Fire TV boxes on your LAN"
+readme = "README.md"
+license = "MIT"
 requires-python = ">=3.12"
 dependencies = [
     "aiohttp>=3.14.3",

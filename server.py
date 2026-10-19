@@ -17,6 +17,7 @@ import logging
 import os
 import re
 import shlex
+import shutil
 import socket
 from pathlib import Path
 
@@ -26,7 +27,7 @@ from androidtvremote2 import AndroidTVRemote, CannotConnect, ConnectionClosed, I
 HERE = Path(__file__).resolve().parent
 DATA = HERE / "data"
 DEVICES_FILE = DATA / "devices.json"
-ADB = os.environ.get("ADB", str(Path.home() / ".local/opt/platform-tools/adb"))
+ADB = os.environ.get("ADB") or shutil.which("adb") or "adb"
 HOST = os.environ.get("REMOTE_HOST", "0.0.0.0")  # 127.0.0.1 once nginx fronts it
 PORT = int(os.environ.get("REMOTE_PORT", "8780"))
 KINDS = ("androidtv", "adb")
@@ -35,17 +36,6 @@ KEY_RE = re.compile(r"^KEYCODE_[A-Z0-9_]+$")
 PKG_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z0-9_]+)+$")
 
 log = logging.getLogger("shield-remote")
-
-
-def shield_ip() -> str:
-    if ip := os.environ.get("SHIELD_IP"):
-        return ip
-    env = HERE.parent / "shield.env"
-    if env.exists():
-        for ln in env.read_text().splitlines():
-            if ln.startswith("SHIELD_IP="):
-                return ln.split("=", 1)[1].strip().strip("'\"")
-    return "192.168.1.3"
 
 
 def toast(text: str) -> dict:
@@ -320,7 +310,9 @@ class Hub:
     def load(self) -> list[dict]:
         if DEVICES_FILE.exists():
             return json.loads(DEVICES_FILE.read_text())
-        return [{"id": "shield", "name": "Shield", "kind": "androidtv", "host": shield_ip()}]
+        if host := os.environ.get("SHIELD_IP"):
+            return [{"id": "shield", "name": "Shield", "kind": "androidtv", "host": host}]
+        return []
 
     def save(self):
         DEVICES_FILE.write_text(json.dumps([d.info() for d in self.devices.values()], indent=2))
@@ -378,7 +370,7 @@ class Hub:
     async def scan(self) -> dict:
         """Probe this /24 for adb (5555) and Android TV remote (6466) listeners."""
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-            s.connect((shield_ip(), 9))  # no packets sent; just picks the LAN interface
+            s.connect(("192.0.2.1", 9))  # no packets sent; just picks the LAN interface
             me = s.getsockname()[0]
         net = ipaddress.ip_network(f"{me}/24", strict=False)
         sem = asyncio.Semaphore(128)

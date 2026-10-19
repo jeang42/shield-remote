@@ -152,7 +152,7 @@
 <div id="app">
 <header>
   <div class="dot" id="dot"></div>
-  <div class="who"><select id="devsel" aria-label="Device"><option>Shield</option></select><span id="sub">connecting…</span></div>
+  <div class="who"><select id="devsel" aria-label="Device"></select><span id="sub">connecting…</span></div>
   <button id="layoutbtn" aria-label="Layout" title="Layout: auto / portrait / landscape">
     <svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="11" rx="2"/><path d="M8 3h8"/></svg><span id="layoutname">Auto</span>
   </button>
@@ -162,7 +162,7 @@
 </header>
 
 <section id="pairing" hidden>
-  <h2>Pair with the Shield</h2>
+  <h2>Pair with the TV</h2>
   <p id="pairtext">This remote isn't paired yet. Press Start, then type the code shown on the TV.</p>
   <p class="err" id="pairerr" hidden></p>
   <div id="pairstep1"><button id="pairstart" style="width:100%">Start pairing</button></div>
@@ -235,7 +235,7 @@
   <div id="shotmsg">Grab a screenshot of the TV (uses adb; some apps block capture).</div>
 </section>
 
-<section>
+<section id="devsec">
   <h2>Devices <button class="link" id="scanbtn">scan network</button></h2>
   <div class="devs" id="devs"></div>
   <div id="scanout" hidden></div>
@@ -296,6 +296,10 @@ function setDevices(list) {
   if (!curDev()) cur = list[0]?.id || null;
   sel.value = cur || "";
   renderDevs(); applyDev();
+  if (!list.length) {
+    render({ status: "offline", error: "no devices yet, add one under Devices" });
+    $("#devsec").scrollIntoView({ behavior: "smooth" });
+  }
 }
 function selectDev(id) {
   cur = id; $("#devsel").value = id;
@@ -491,13 +495,12 @@ const DEFAULT_APPS = [
   ["YouTube", "com.google.android.youtube.tv"], ["Plex", "com.plexapp.android"],
   ["Jellyfin", "org.jellyfin.androidtv"], ["Netflix", "com.netflix.ninja"],
   ["Steam Link", "com.valvesoftware.steamlink"], ["RetroArch", "com.retroarch"],
-  ["ScummVM", "org.scummvm.scummvm"], ["Shield Drop", "tv.shielddrop"],
-  ["AirScreen", "com.ionitech.airscreen"],
+  ["ScummVM", "org.scummvm.scummvm"], ["AirScreen", "com.ionitech.airscreen"],
 ];
 const FIRETV_APPS = [
   ["Prime Video", "com.amazon.avod"], ["Netflix", "com.netflix.ninja"],
   ["YouTube", "com.amazon.firetv.youtube"], ["Plex", "com.plexapp.android"],
-  ["Jellyfin", "org.jellyfin.androidtv"], ["Shield Drop", "tv.shielddrop"],
+  ["Jellyfin", "org.jellyfin.androidtv"],
 ];
 let apps = DEFAULT_APPS;
 function loadApps() {
