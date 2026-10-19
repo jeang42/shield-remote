@@ -4,6 +4,8 @@ A browser remote for the TV boxes on your LAN. Run it on any always-on machine, 
 on a phone or laptop, and drive an NVIDIA Shield, a Google TV, or a Fire TV stick: one page
 for all of them, with a device picker in the header.
 
+![shield-remote in a desktop browser](docs/screenshot.png)
+
 - **Android TV / Google TV** (NVIDIA Shield, Chromecast with Google TV, Sony/TCL Google TVs):
   speaks the Android TV Remote protocol v2, the same one Google's TV phone app uses (TLS on
   6466, pairing code on 6467), via [androidtvremote2](https://github.com/tronikos/androidtvremote2).
