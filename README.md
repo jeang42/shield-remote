@@ -77,4 +77,5 @@ The trailing slash on `/remote/` matters: the page resolves `ws` and `screenshot
 
 ## License
 
-MIT
+Copyright 2026 Jeff Angelcyk. Licensed under the [Apache License 2.0](LICENSE); see
+[NOTICE](NOTICE). Source files carry `SPDX-License-Identifier: Apache-2.0`.

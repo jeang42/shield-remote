@@ -1,3 +1,5 @@
+# Copyright 2026 Jeff Angelcyk
+# SPDX-License-Identifier: Apache-2.0
 """Shield Remote: control TV boxes on the LAN from a browser.
 
 Two backends:
